@@ -18,7 +18,8 @@ struct Challenge {
 
 #define CHALLENGES_NUM 2
 extern struct Challenge RedOrBlue;
-extern struct Challenge RedOrBlue2;
+extern struct Challenge TMP;
 struct Challenge *challenges[CHALLENGES_NUM] = {
     &RedOrBlue,
+    &TMP,
 };

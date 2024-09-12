@@ -133,7 +133,7 @@ void setup() {
 
 	        data_send(1, challenge_id, YELLOW);
 
-            delay(1000);
+            delay(500);
         }
     };
 
