@@ -10,7 +10,7 @@ const uint8_t DIGIT_CORON = 10;
 const uint8_t DIGIT_NONE = 11;
 
 bool timer_stop	= true;
-SignalColor signal = YELLOW;
+SignalColor signal_color = YELLOW;
 EventGroupHandle_t eg_handle;
 
 volatile int time_remain = 0;
@@ -28,27 +28,31 @@ void data_send(int digit, int num, SignalColor rgb);
 
 // called every second.
 void IRAM_ATTR onTimer() {
+    portENTER_CRITICAL_ISR(&timerMux);
     if (!timer_stop) {
         digitalWrite(BUZZER, HIGH);
 
-        portENTER_CRITICAL_ISR(&timerMux);
         time_remain--;
         minits = time_remain / 60;
         second = time_remain % 60;
-        portEXIT_CRITICAL_ISR(&timerMux);
     }
+    portEXIT_CRITICAL_ISR(&timerMux);
 }
 
 void succeeded(void) {
-	signal	   = GREEN;
+	signal_color = GREEN;
+    portENTER_CRITICAL_ISR(&timerMux);
 	timer_stop = true;
+    portEXIT_CRITICAL_ISR(&timerMux);
 
 	while(1) delay(1e5);
 }
 
 void failed(void) {
-	signal = RED;
+	signal_color = RED;
+    portENTER_CRITICAL_ISR(&timerMux);
 	timer_stop = true;
+    portEXIT_CRITICAL_ISR(&timerMux);
 
 	digitalWrite(BUZZER, HIGH);
 	while(digitalRead(SYSSW) == HIGH);
@@ -58,7 +62,6 @@ void failed(void) {
 
 void display(void *pvParameters) {
     bool buzzer_stop = false;
-    timer_stop = false;
 	minits = time_remain / 60;
 	second = time_remain % 60;
 
@@ -71,7 +74,7 @@ void display(void *pvParameters) {
                 timer = NULL;
             }
 
-            signal = RED;
+            signal_color = RED;
 
             if (digitalRead(SYSSW) == LOW) {
                 buzzer_stop = true;
@@ -86,11 +89,11 @@ void display(void *pvParameters) {
             digitalWrite(BUZZER, LOW);
         }
 
-		data_send(4, (minits / 10) % 10, signal);
-		data_send(3, minits % 10, signal);
-		data_send(5, 10, signal);
-		data_send(2, (second / 10) % 10, signal);
-		data_send(1, second % 10, signal);
+		data_send(4, (minits / 10) % 10, signal_color);
+		data_send(3, minits % 10, signal_color);
+		data_send(5, 10, signal_color);
+		data_send(2, (second / 10) % 10, signal_color);
+		data_send(1, second % 10, signal_color);
 	}
 }
 
@@ -140,6 +143,10 @@ void setup() {
     challenge = challenges[challenge_id];
     challenge->setup_pin();
     time_remain = challenge->time_limit;
+
+    portENTER_CRITICAL_ISR(&timerMux);
+    timer_stop = false;
+    portEXIT_CRITICAL_ISR(&timerMux);
 	xTaskCreatePinnedToCore(challenge->gaming, "gaming", 8192, NULL, 1, NULL, 1);
 	xTaskCreatePinnedToCore(display, "display", 8192, NULL, 1, NULL, 1);
 	delay(100);
