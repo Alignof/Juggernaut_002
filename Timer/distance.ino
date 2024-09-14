@@ -33,7 +33,6 @@ void distance(void *pvParameters) {
 	bool flag1 = false;
 	bool flag2 = false;
 	bool flag3 = false;
-	bool flag4 = false;
     long duration, cm;
 
     digitalWrite(TRIG, LOW);
@@ -49,16 +48,12 @@ void distance(void *pvParameters) {
         duration = pulseIn(ECHO, HIGH);
         cm = (duration/2) / 29.1;
 
-        if (flag1 && cm < 8) {
+        if (flag1 && 7 < cm && cm < 11) {
             flag3 = true;
         }
 		
-        if (flag2 && cm > 10) {
-            flag4 = true;
-        }
-		
 		// succeeded
-		if(flag3 || flag4) {
+		if(flag3) {
             succeeded();
 		}
 
