@@ -12,7 +12,7 @@
 
 struct Challenge CutAndPush = {
     .gaming = cut_and_push,
-    .setup_pin = setup_ws,
+    .setup_pin = setup_cap,
     .time_limit = 900,
 };
 
