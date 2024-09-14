@@ -27,7 +27,19 @@
 回路の写真を @circuit に示す．
 #figure(
   image("../images/circuit_004.jpg"),
+  caption: [回路の写真],
 )<circuit>
+
+回路を構成する部品を @parts に示す．
+#figure(
+  table(
+    stroke: (x: none),
+    columns: 3,
+    table.header([部品名], [個数], [データシート]),
+    [???], [1], [#link("https://akizukidenshi.com/goodsaffix/hc-sr04_v20.pdf")]
+  ),
+  caption: [部品一覧],
+)<parts>
 
 = ソースコード
 装置に書き込まれたプログラムを以下に示す．
