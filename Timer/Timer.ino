@@ -16,16 +16,18 @@ struct Challenge {
     int time_limit;
 };
 
-#define CHALLENGES_NUM 5
+#define CHALLENGES_NUM 6
 extern struct Challenge RedOrBlue;
 extern struct Challenge FourLights;
 extern struct Challenge InvisibleLight;
 extern struct Challenge CutAndPush;
+extern struct Challenge Distance;
 extern struct Challenge TMP;
 struct Challenge *challenges[CHALLENGES_NUM] = {
     &RedOrBlue,
     &FourLights,
     &InvisibleLight,
     &CutAndPush,
+    &Distance,
     &TMP,
 };
