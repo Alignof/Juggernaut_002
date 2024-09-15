@@ -29,36 +29,33 @@ void setup_dist(void) {
 	pinMode(RIGHT_BUTTON, INPUT_PULLUP);
 }
 
+
 void distance(void *pvParameters) {
 	bool flag1 = false;
 	bool flag2 = false;
 	bool flag3 = false;
-	bool flag4 = false;
     long duration, cm;
-
-    digitalWrite(TRIG, LOW);
-    delayMicroseconds(5);
-    digitalWrite(TRIG, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(TRIG, LOW);
 
 	while(1) {
 		flag1 = (digitalRead(RIGHT_BUTTON)  == LOW);
 		flag2 = (digitalRead(LEFT_BUTTON) == LOW);
 
+        digitalWrite(TRIG, LOW);
+        delayMicroseconds(5);
+        digitalWrite(TRIG, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(TRIG, LOW);
+
+        //duration = read_pulse(ECHO);
         duration = pulseIn(ECHO, HIGH);
         cm = (duration/2) / 29.1;
 
-        if (flag1 && cm < 8) {
+        if (flag1 && 10 <= cm && cm < 11) {
             flag3 = true;
         }
 		
-        if (flag2 && cm > 10) {
-            flag4 = true;
-        }
-		
 		// succeeded
-		if(flag3 || flag4) {
+		if(flag3) {
             succeeded();
 		}
 
